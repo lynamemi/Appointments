@@ -11,9 +11,9 @@ def show_appt(request):
 	try:
 		context = {
 			'appts':Appt.objects.filter(user_id=request.session['user']).exclude(date=datetime.now()),
-			'todays_appts':Appt.objects.filter(date=datetime.now(), user_id=request.session['user'])
+			'todays_appts':Appt.objects.filter(date=datetime.now(), user_id=request.session['user']),
+			'todays_date':Appt.objects.filter(date=datetime.now(), user_id=request.session['user'])[0]
 			}
-		print datetime.now()
 		return render(request, 'appt/show_appt.html', context)
 	except:
 		return render(request, 'appt/show_appt.html')

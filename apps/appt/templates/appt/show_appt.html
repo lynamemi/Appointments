@@ -16,9 +16,7 @@
 		</nav>
 		<div class="panel panel-default">
 			<div class="panel-heading">Here are you appointments for today, 
-			{% for todays_appt in todays_appts %}
-				{{todays_appt.date}}:
-			{%endfor %}
+			{{todays_date.date}}:
 			</div>
 				<table class="table">
 					<tr>

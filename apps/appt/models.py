@@ -1,13 +1,17 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 # Create your models here.
 class ApptManager(models.Manager):
 	def create_appt(self, data):
 		errors=[]
-		if data['date'] == "":
-			errors.append("Date may not be blank and should be current or future dated")
+		try:
+			if (datetime.now() - datetime.strptime(data['date'], '%Y-%m-%d')).days==0:
+				pass
+		except:
+			if data['date'] == "" or datetime.strptime(data['date'], '%Y-%m-%d') < datetime.now():
+				errors.append("Date may not be blank and should be current or future dated")
 		if data['time'] == "":
 			errors.append("Time may not be blank")
 		if not len(data['tasks']) > 1:
@@ -18,8 +22,12 @@ class ApptManager(models.Manager):
 	def update_appt(self, id, data):
 		appt = Appt.objects.get(id=id)
 		errors=[]
-		if data['date'] == "" or datetime.strptime(data['date'], '%Y-%m-%d') < datetime.now():
-			errors.append("Date may not be blank and should be current or future dated")
+		try:
+			if (datetime.now() - datetime.strptime(data['date'], '%Y-%m-%d')).days==0:
+				pass
+		except:
+			if data['date'] == "" or datetime.strptime(data['date'], '%Y-%m-%d') < datetime.now():
+				errors.append("Date may not be blank and should be current or future dated")
 		if data['time'] == "":
 			errors.append("Time may not be blank")
 		if not len(data['tasks']) > 1:
