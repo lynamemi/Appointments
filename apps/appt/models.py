@@ -6,7 +6,7 @@ from datetime import datetime, date
 class ApptManager(models.Manager):
 	def create_appt(self, data):
 		errors=[]
-		if data['date'] == "" or not datetime.now() < datetime.strptime(data['date'], '%Y-%m-%d') or not datetime.now() < datetime.strptime(data['time'], '%H:%i'):
+		if data['date'] == "":
 			errors.append("Date may not be blank and should be current or future dated")
 		if data['time'] == "":
 			errors.append("Time may not be blank")
