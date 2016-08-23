@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>What's Up</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'appt/css/bootstrap.min.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'appt/css/style.css' %}">
+		<script type="text/javascript" src="{% static 'appt/js/bootstrap.min.js' %}"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default navbar-static-top">
+			<div class="container">
+				<h4>Hello, {{request.session.first_name}}!</h4>
+				<a href="/logout">Logout</a>
+			</div>
+		</nav>
+		<div class="panel panel-default">
+			<div class="panel-heading">Here are you appointments for today, 
+			{% for todays_appt in todays_appts %}
+				{{todays_appt.date}}:
+			{%endfor %}
+			</div>
+				<table class="table">
+					<tr>
+						<th>Tasks</th>
+						<th>Time</th>
+						<th>Status</th>
+						<th>Action</th>
+					</tr>
+					{% for todays_appt in todays_appts %}
+					<tr>
+						<td>{{todays_appt.tasks}}</td>
+						<td>{{todays_appt.time}}</td>
+						<td>{{todays_appt.status}}</td>
+						{% if todays_appt.status == "pending" %}
+						<td><a href="/appointments/{{todays_appt.id}}">Edit</a> | <a href="/delete_appt/{{todays_appt.id}}">Delete</a></td>
+						{% else %}
+						<td></td>
+						{% endif %}
+					</tr>
+					{% endfor %}
+				</table>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Your Other appointments:</div>
+				<table class="table">
+					<tr>
+						<th>Tasks</th>
+						<th>Date</th>
+						<th>Time</th>
+					</tr>
+					{% for appt in appts %}
+					<tr>
+						<td>{{appt.tasks}}</td>
+						<td>{{appt.date}}</td>
+						<td>{{appt.time}}</td>
+					</tr>
+					{% endfor %}
+				</table>
+		</div>
+		{% if messages %}
+			{% for message in messages %}
+				<p class="alert">{{message.message}}</p>
+			{% endfor %}
+		{% endif %}
+		<h3>Add Appointment:</h3>
+		<form action="/add_appt" method="post" class="form" id="add">
+			{% csrf_token %}
+			<p>Date: <input type="date" name="date"></p>
+			<p>Time: <input type="time" name="time"></p>
+			<p>Tasks: <input type="text" name="tasks"></p>
+			<p><input type="submit" value="Add"></p>
+		</form>
+	</body>
+</html>

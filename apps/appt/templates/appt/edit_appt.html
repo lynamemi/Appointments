@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Update Appointment</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'appt/css/bootstrap.min.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'appt/css/style.css' %}">
+		<script type="text/javascript" src="{% static 'appt/js/bootstrap.min.js' %}"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default navbar-static-top">
+			<div class="container">
+				<a href="/appointments">Dashboard</a> | <a href="/logout">Logout</a>
+			</div>
+		</nav>
+		<form action="/update_appt/{{appt.id}}" method="post" class="form">
+			{% csrf_token %}
+			<p>Tasks:<input type="text" name="tasks" value="{{appt.tasks}}"></p>
+			<p>Status:
+			<select name="status">
+				<option value="done">Done</option>
+				<option value="pending">Pending</option>
+				<option value="missed">Missed</option>
+			</select>
+			</p>
+			<p>Date: <input type="date" name="date" value="{{appt.date|date:'Y-m-d'}}"></p>
+			<p>Time: <input type="time" name="time" value="{{appt.time|time:'H:i'}}"></p>
+			<p><input type="submit" value="Update"></p>
+		</form>
+		{% if messages %}
+			{% for message in messages %}
+				<p class="alert">{{message.message}}</p>
+			{% endfor %}
+		{% endif %}
+	</body>
+</html>
