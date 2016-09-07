@@ -4,13 +4,16 @@ from .models import Appt
 from ..loginreg.models import User
 from django.contrib import messages
 from datetime import datetime, date
+from django.db.models import Q
 # Create your views here.
 def index(request):
 	return render(request, 'loginreg/loginreg.html')
 def show_appt(request):
+	if id not in session:
+		return redirect('/')
 	try:
 		context = {
-			'appts':Appt.objects.filter(user_id=request.session['user']).exclude(date=datetime.now()),
+			'appts': Appt.objects.filter(Q(date__gte=datetime.now()) & Q(user__id=request.session['user'])).exclude(date__lte=datetime.now(), date__gte=datetime.now()).order_by('date'),
 			'todays_appts':Appt.objects.filter(date=datetime.now(), user_id=request.session['user']).order_by('time'),
 			'todays_date':Appt.objects.filter(date=datetime.now(), user_id=request.session['user'])[0]
 			}
@@ -34,6 +37,7 @@ def update_appt(request, id):
 	else:
 		pass
 def add_appt(request):
+	print request.POST
 	new_appt = Appt.apptManager.create_appt(request.POST)
 	if new_appt[0] == False:
 		for error in new_appt[1]:

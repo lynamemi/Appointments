@@ -1,32 +1,28 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
+from time import strftime
 # Create your models here.
 class ApptManager(models.Manager):
 	def create_appt(self, data):
 		errors=[]
-		try:
-			if (datetime.now() - datetime.strptime(data['date'], '%Y-%m-%d')).days==0:
-				pass
-		except:
-			if data['date'] == "" or datetime.strptime(data['date'], '%Y-%m-%d') < datetime.now():
-				errors.append("Date may not be blank and should be current or future dated")
+		# strftime defaults to today - don't need time
+		if data['date'] == "" or data['date'] < strftime('%Y-%m-%d'):
+			errors.append("Date may not be blank and should be current or future dated")
 		if data['time'] == "":
 			errors.append("Time may not be blank")
 		if not len(data['tasks']) > 1:
 			errors.append("Tasks may not be blank")
+		if data['date'] != "" and Appt.objects.filter(date=data['date']) and Appt.objects.filter(time=data['time']):
+			errors.append("Do not overlap appointments")
 		if not errors:
 			return(True, data)
 		return(False, errors)
 	def update_appt(self, id, data):
 		appt = Appt.objects.get(id=id)
 		errors=[]
-		try:
-			if (datetime.now() - datetime.strptime(data['date'], '%Y-%m-%d')).days==0:
-				pass
-		except:
-			if data['date'] == "" or datetime.strptime(data['date'], '%Y-%m-%d') < datetime.now():
+		if data['date'] == "" or data['date'] < strftime('%Y-%m-%d'):
 				errors.append("Date may not be blank and should be current or future dated")
 		if data['time'] == "":
 			errors.append("Time may not be blank")

@@ -24,15 +24,11 @@ def log_process(request):
 		messages.add_message(request, messages.INFO, log_user[1])
 		return redirect(reverse('main'))
 	else:
-		request.session['user'] = log_user[1].id
-		request.session['first_name'] = log_user[1].first_name
-		print request.session['first_name']
-		print request.session['user']
+		request.session['id'] = log_user[1].id
 		return redirect(reverse('show_appt'))
 def logout(request):
 	try:
-		del request.session['user']
-		del request.session['first_name']
+		request.session.clear()
 	except:
 		pass
 	return redirect('/')
